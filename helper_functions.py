@@ -5,14 +5,11 @@ import os
 def load_ordinal_columns(script_path: str, json_file: str) -> dict:
     """
     Run a script to generate a JSON file with column category order and load the JSON file.
-    
     Parameters:
     - script_path (str): Path to the Python script that generates the JSON file.
     - json_file (str): Path to the JSON file to be loaded.
-
     Returns:
     - dict: The loaded dictionary from the JSON file.
-    
     Raises:
     - subprocess.CalledProcessError: If the script fails to run.
     - FileNotFoundError: If the JSON file does not exist.
@@ -33,6 +30,18 @@ def load_ordinal_columns(script_path: str, json_file: str) -> dict:
     except FileNotFoundError:
         raise FileNotFoundError(f"{json_file} was not created. Check {script_path} for issues.")
 
+def convert_to_categorical(col, ordinal_columns):
+    """
+    Converts a column to a categorical type with specified categories and order if the column is in the ordinal_columns dictionary.
+    Parameters:
+    - col (pandas.Series): The column to convert.
+    - ordinal_columns (dict): Dictionary with column names as keys and category lists as values.
+    Returns:
+    - pandas.Series: The column as a ordered categorical type if it's in the dictionary, otherwise the original column.
+    """
+    if col.name in ordinal_columns:  # Check if column needs to be converted
+        return pd.Categorical(col, categories=ordinal_columns[col.name], ordered=True)
+    return col  # Return column unchanged if not in the dictionary
 
 # Old stuff below
 import pandas as pd 

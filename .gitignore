@@ -5,3 +5,4 @@ data/NRWC-quiz_V2.xlsx
 .ipynb_checkpoints/
 __pycache__/
 plots/.DS_Store
+*.csv

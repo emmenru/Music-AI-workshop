@@ -89,12 +89,13 @@ def perform_chi2_test(df, column_name):
     Parameters
     ----------
     df : pandas.DataFrame
-        The DataFrame containing the categorical data.
+    - The DataFrame containing the categorical data.
         
     column_name : str
-        The name of the column to perform the test on.
+    - The name of the column to perform the test on.
 
-    Returns
+    Returns: 
+    - float: p_value
     -------
     None
         Prints the Chi-square statistic, p-value, and an interpretation of the result.
@@ -121,6 +122,9 @@ def perform_chi2_test(df, column_name):
     else:
         print(f'No significant difference detected for {column_name}.')
     print('-' * 50)
+    return(p_value)
 
 # Pairwise McNemar tests 
 
+
+# Plotting functions

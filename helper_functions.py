@@ -2,7 +2,7 @@ import json
 import numpy as np
 import os
 import pandas as pd
-from scipy.stats import chi2_contingency
+from scipy.stats import chi2_contingency, chi2
 from statsmodels.stats.contingency_tables import cochrans_q
 import subprocess
 
@@ -124,7 +124,60 @@ def perform_chi2_test(df, column_name):
     print('-' * 50)
     return(p_value)
 
-# Pairwise McNemar tests 
+# McNemar test 
+def calculate_mcnemar_test(df, image_questions, sound_questions, threshold=3):
+    '''
+    Calculate a 2x2 contingency table and McNemar test statistic without continuity correction.
+
+    Parameters:
+    - df (pandas.DataFrame): DataFrame containing binary response data for each participant.
+      Each row represents a participant's responses to a series of questions, with columns
+      indicating each question.
+    - image_questions (list of str): List of column names corresponding to questions with images.
+    - sound_questions (list of str): List of column names corresponding to questions with sounds.
+    - threshold (int, optional): Minimum correct responses to classify a participant as
+      high-performing in each condition. Default is 3 (out of 6 questions, for a 50% threshold).
+
+    Returns:
+    - contingency_table (pandas.DataFrame): 2x2 DataFrame showing counts for the McNemar test categories:
+      [Yes-Yes, Yes-No, No-Yes, No-No].
+    - mcnemar_statistic (float): McNemar test statistic (without continuity correction).
+    - p_value (float): P-value associated with the McNemar test statistic.
+    '''
+
+    # Calculate correct answer counts for each condition per participant
+    df['image_correct'] = df[image_questions].sum(axis=1)
+    df['sound_correct'] = df[sound_questions].sum(axis=1)
+
+    # Apply threshold to classify each participant's performance in each condition
+    df['image_high'] = df['image_correct'] >= threshold
+    df['sound_high'] = df['sound_correct'] >= threshold
+
+    # Calculate counts for the McNemar test table categories
+    a = ((df['image_high'] == True) & (df['sound_high'] == True)).sum()
+    b = ((df['image_high'] == True) & (df['sound_high'] == False)).sum()
+    c = ((df['image_high'] == False) & (df['sound_high'] == True)).sum()
+    d = ((df['image_high'] == False) & (df['sound_high'] == False)).sum()
+
+    # Populate a 2x2 contingency table
+    contingency_table = pd.DataFrame({
+        'Sound Correct (Yes)': [a, c],
+        'Sound Incorrect (No)': [b, d]
+    }, index=['Image Correct (Yes)', 'Image Incorrect (No)'])
+
+    # Calculate the McNemar test statistic without continuity correction
+    mcnemar_statistic = (b - c)**2 / (b + c) if (b + c) != 0 else 0
+
+    # Calculate the p-value using chi-square distribution with 1 degree of freedom
+    p_value = chi2.sf(mcnemar_statistic, df=1)
+
+    # Print the contingency table, test statistic, and p-value (optional for debugging)
+    print("McNemar's 2x2 Contingency Table:")
+    print(contingency_table)
+    print("\nMcNemar test statistic (without continuity correction):", mcnemar_statistic)
+    print("p-value:", p_value)
+
+    return contingency_table, mcnemar_statistic, p_value
 
 
 # Plotting functions

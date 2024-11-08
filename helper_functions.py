@@ -1,5 +1,41 @@
-import pandas as pd 
+import subprocess
+import json
+import os
 
+def load_ordinal_columns(script_path: str, json_file: str) -> dict:
+    """
+    Run a script to generate a JSON file with column category order and load the JSON file.
+    
+    Parameters:
+    - script_path (str): Path to the Python script that generates the JSON file.
+    - json_file (str): Path to the JSON file to be loaded.
+
+    Returns:
+    - dict: The loaded dictionary from the JSON file.
+    
+    Raises:
+    - subprocess.CalledProcessError: If the script fails to run.
+    - FileNotFoundError: If the JSON file does not exist.
+    """
+    # Run script to create JSON file
+    try:
+        result = subprocess.run(["python", script_path], capture_output=True, text=True, check=True)
+        print(f"{script_path} ran successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error running {script_path}: {e.stderr}")
+        raise
+
+    # Load the ordinal columns configuration file
+    try:
+        with open(json_file, 'r') as file:
+            ordinal_columns = json.load(file)
+        return ordinal_columns
+    except FileNotFoundError:
+        raise FileNotFoundError(f"{json_file} was not created. Check {script_path} for issues.")
+
+
+# Old stuff below
+import pandas as pd 
 def get_user_input():
     while True:
         try:

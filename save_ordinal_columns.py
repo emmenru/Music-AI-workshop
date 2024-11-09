@@ -20,22 +20,22 @@ ordinal_columns = {
         'I strongly prefer silence'
     ],
     'Personalized_music': [
-        'Strongly agree', 
-        'Agree',
-        'Slightly agree', 
+        'I strongly agree', 
+        'I agree',
+        'I slightly agree', 
         'I am neutral',
         'I slightly disagree', 
         'I disagree', 
         'I strongly disagree'
     ],
     'Privacy_vs_personalization': [
-        'maximum privacy, minimum personalization', 
-        'very high privacy, very low personalization',
-        'high privacy, low personalization', 
-        'moderate privacy, moderate personalization',
-        'low privacy, high personalization', 
-        'very low privacy, very high personalization', 
-        'minimum privacy, maximum personalization'
+        'Maximum privacy, minimum personalization', 
+        'Very high privacy, very low personalization',
+        'High privacy, low personalization', 
+        'Moderate privacy, moderate personalization',
+        'Low privacy, high personalization', 
+        'Very low privacy, very high personalization', 
+        'Minimum privacy, maximum personalization'
     ],
     'Sharing_data': [
         'I strongly agree', 

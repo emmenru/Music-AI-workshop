@@ -206,8 +206,26 @@ def plot_correct_answers(total_correct_per_question, correct_answers_dict, color
     plt.show()
     plt.close()
 
+import os
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
 
-def plot_confusion_matrix(df_guesses, correct_answers_subset, title):
+def plot_confusion_matrix(df_guesses, correct_answers_subset, title, output_dir='plots/quiz'):
+    '''
+    Generate and plot a confusion matrix for the guesses made by participants 
+    for the selected questions, comparing their answers with the correct answers.
+    
+    Parameters:
+    - df_guesses (DataFrame): DataFrame containing participants' guesses for each question (columns represent questions).
+    - correct_answers_subset (dict): Dictionary with the correct answers for the selected questions (e.g., {'Q1': 'Answer1', 'Q2': 'Answer2'}).
+    - title (str): Title for the confusion matrix plot.
+    - output_dir (str): Directory to save the confusion matrix plot. Default is 'plots/quiz'.
+    '''
+    
+    # Ensure the output directory exists
+    os.makedirs(output_dir, exist_ok=True)
+    
     # 1. Flatten the correct answers and guesses for the selected questions (Q1-Q6)
     y_true = []
     y_pred = []
@@ -222,8 +240,14 @@ def plot_confusion_matrix(df_guesses, correct_answers_subset, title):
     
     # 3. Plot the combined confusion matrix
     plt.figure(figsize=(10, 8))
-    sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
+    sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Reds', xticklabels=labels, yticklabels=labels)
     plt.xlabel('Participant Guesses')
     plt.ylabel('Correct Answer')
     plt.title(title)
+    
+    # 4. Save the figure to the specified directory
+    filename = os.path.join(output_dir, title.lower().replace(' ', '_') + '.png')
+    plt.savefig(filename, dpi=300, bbox_inches='tight')
+    
+    # Show the plot
     plt.show()

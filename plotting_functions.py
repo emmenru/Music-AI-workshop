@@ -102,7 +102,7 @@ def plot_and_save_questions(df, title, color_map, unique_categories, correct_ans
         individual_fig.savefig(f"{output_dir}/{col.lower()}_plot.png", dpi=300, bbox_inches='tight')
         plt.close(individual_fig)
     
-    # Finalize and save the main figure
+    # Finalize and save 
     fig.tight_layout()
     plt.suptitle(title, fontsize=16, y=0.95)
     plt.subplots_adjust(top=0.9)
@@ -140,7 +140,7 @@ def plot_stacked_bar(df_subset, title, color_map, unique_categories, label_dict,
     ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
     ax.legend(title="Response", loc='upper left', fontsize=12, title_fontsize=14, bbox_to_anchor=(1, 1))
     
-    # Save and display plot
+    # Save and display 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/stacked_{title.lower().replace(' ', '_').replace(':', '')}.png", dpi=300, bbox_inches='tight')
     plt.show()
@@ -168,7 +168,7 @@ def plot_correct_answers(total_correct_per_question, correct_answers_dict, color
     correct_answers_df = correct_answers_df.sort_values(by='CorrectAnswers', ascending=True)
 
     # Create detailed labels combining question number and description
-    detailed_labels = [f"{q} : {correct_answers_dict.get(q, '')}" for q in correct_answers_df['Questions']]
+    detailed_labels = [f'{q} : {correct_answers_dict.get(q, "")}' for q in correct_answers_df['Questions']]
     
     # Define colors based on question categories (image or sound)
     colors = [colorblind_palette[0] if q in IMAGE_LIST else colorblind_palette[1] 
@@ -198,18 +198,13 @@ def plot_correct_answers(total_correct_per_question, correct_answers_dict, color
     ]
     plt.legend(handles=legend_handles, title='Condition', loc='upper right')
 
-    # Adjust layout and save the plot
+    # Adjust layout and save
     plt.tight_layout()
-    filename = f"{output_dir}/corrects.png"
+    filename = f'{output_dir}/corrects.png'
     plt.savefig(filename, dpi=300, bbox_inches='tight')
     
     plt.show()
     plt.close()
-
-import os
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.metrics import confusion_matrix
 
 def plot_confusion_matrix(df_guesses, correct_answers_subset, title, output_dir='plots/quiz'):
     '''
@@ -226,28 +221,28 @@ def plot_confusion_matrix(df_guesses, correct_answers_subset, title, output_dir=
     # Ensure the output directory exists
     os.makedirs(output_dir, exist_ok=True)
     
-    # 1. Flatten the correct answers and guesses for the selected questions (Q1-Q6)
+    # Flatten the correct answers and guesses for the selected questions
     y_true = []
     y_pred = []
     
     for question, correct_answer in correct_answers_subset.items():
+        # Add "image" or "sound" suffix based on question number
+        suffix = " image" if int(question[1:]) <= 6 else " sound"
         y_true.extend([correct_answer] * len(df_guesses))  # Repeat correct answer for each participant
-        y_pred.extend(df_guesses[question].tolist())       # Append each participant's guesses
+        y_pred.extend([guess + suffix for guess in df_guesses[question].tolist()])  # Add suffix to guesses
     
-    # 2. Generate the combined confusion matrix
-    labels = list(set(y_true + y_pred))  # Unique categories for consistent labeling
+    # Get the unique labels from correct answers
+    labels = sorted(list(set(correct_answers_subset.values())))
+    
+    # Generate the confusion matrix
     conf_matrix = confusion_matrix(y_true, y_pred, labels=labels)
     
-    # 3. Plot the combined confusion matrix
+    # Plot and save
     plt.figure(figsize=(10, 8))
     sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Reds', xticklabels=labels, yticklabels=labels)
     plt.xlabel('Participant Guesses')
     plt.ylabel('Correct Answer')
     plt.title(title)
-    
-    # 4. Save the figure to the specified directory
     filename = os.path.join(output_dir, title.lower().replace(' ', '_') + '.png')
     plt.savefig(filename, dpi=300, bbox_inches='tight')
-    
-    # Show the plot
     plt.show()

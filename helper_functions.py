@@ -181,6 +181,7 @@ def calculate_mcnemar_test(df, image_questions, sound_questions, threshold=3):
     return contingency_table, mcnemar_statistic, p_value
 
 # Plotting functions
+# Survey
 def plot_survey(df, columns_to_plot, color, output_dir='plots/survey'):
     '''
     Create a bar plot for each specified column in the DataFrame `df`, saving the figure
@@ -212,8 +213,6 @@ def plot_survey(df, columns_to_plot, color, output_dir='plots/survey'):
         ax.set_xlabel('Count', fontsize=12)
         ax.set_title(f'{col.replace('_', ' ')}', fontsize=14)
         ax.set_xticks(range(0, max_x + 1, 2))
-        #ax.set_xticks(range(0, int(value_counts.max()) + 1, 2))
-        #ax.set_xlim(0, int(value_counts.max()) + 1)
         ax.set_xlim(0, max_x+1)  # Set x-axis limit
         ax.set_ylabel('', fontsize=12)
         
@@ -226,3 +225,62 @@ def plot_survey(df, columns_to_plot, color, output_dir='plots/survey'):
     plt.savefig(f'{output_dir}/survey_results.png', dpi=300, bbox_inches='tight')
     plt.show()
 
+
+# Quiz
+def plot_and_save_questions(df, title, color_map, unique_categories, correct_answers_dict, output_dir='plots/quiz', max_x=13):
+    '''
+    Create a set of bar plots for each column in the DataFrame `df`, saving individual plots and a combined figure.
+
+    Parameters:
+    - df (DataFrame): The DataFrame containing survey data.
+    - title (str): Title for the main plot figure.
+    - color_map (dict): Mapping of categories to colors.
+    - unique_categories (array): List of unique categories in the responses.
+    - output_dir (str): Directory to save the plots. Default is 'plots/quiz'.
+    - max_x (int): Maximum x-axis value for the plots. Default is 13.
+    '''
+    os.makedirs(output_dir, exist_ok=True)  # Ensure output directory exists
+    
+    # Create main figure
+    fig, axes = plt.subplots(3, 2, figsize=(15, 8))
+    axes = axes.flatten()
+    
+    # Iterate over columns and plot
+    for i, col in enumerate(df.columns):
+        ax = axes[i]
+        
+        # Count occurrences of each response and reindex to ensure all categories are represented
+        counts = df[col].value_counts().reindex(unique_categories, fill_value=0)
+        
+        # Create bar plot for each column
+        counts.plot(kind='barh', ax=ax, color=[color_map[category] for category in counts.index])
+        ax.set_title(f"{col}: {correct_answers_dict.get(col, '')}", wrap=True, fontsize=14)
+        ax.set_xlabel("Count", fontsize=12)
+        ax.set_ylabel("")
+        ax.set_xlim(0, max_x)
+        ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+        ax.tick_params(axis='both', labelsize=12)
+
+        # Save individual subplot
+        individual_fig = plt.figure(figsize=(8, 5))
+        individual_ax = individual_fig.add_subplot(111)
+        counts.plot(kind='barh', ax=individual_ax, color=[color_map[category] for category in counts.index])
+        individual_ax.set_title(f"{col}: {correct_answers_dict.get(col, '')}", wrap=True, fontsize=14)
+        individual_ax.set_xlabel("Count", fontsize=12)
+        individual_ax.set_ylabel("")
+        individual_ax.set_xlim(0, max_x)
+        individual_ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+        individual_ax.tick_params(axis='both', labelsize=12)
+
+        # Save group plot
+        individual_fig.tight_layout()
+        individual_fig.savefig(f"{output_dir}/{col.lower()}_plot.png", dpi=300, bbox_inches='tight')
+        plt.close(individual_fig)
+    
+    # Finalize and save the main figure
+    fig.tight_layout()
+    plt.suptitle(title, fontsize=16, y=0.95)
+    plt.subplots_adjust(top=0.9)
+    main_filename = f"{output_dir}/subplots_{title.lower().replace(' ', '_').replace(':', '')}.png"
+    plt.savefig(main_filename, dpi=300, bbox_inches='tight')
+    plt.show()

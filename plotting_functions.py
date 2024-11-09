@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import os
 import pandas as pd
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
 
 # Plotting functions
 # Survey
@@ -203,3 +205,25 @@ def plot_correct_answers(total_correct_per_question, correct_answers_dict, color
     
     plt.show()
     plt.close()
+
+
+def plot_confusion_matrix(df_guesses, correct_answers_subset, title):
+    # 1. Flatten the correct answers and guesses for the selected questions (Q1-Q6)
+    y_true = []
+    y_pred = []
+    
+    for question, correct_answer in correct_answers_subset.items():
+        y_true.extend([correct_answer] * len(df_guesses))  # Repeat correct answer for each participant
+        y_pred.extend(df_guesses[question].tolist())       # Append each participant's guesses
+    
+    # 2. Generate the combined confusion matrix
+    labels = list(set(y_true + y_pred))  # Unique categories for consistent labeling
+    conf_matrix = confusion_matrix(y_true, y_pred, labels=labels)
+    
+    # 3. Plot the combined confusion matrix
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
+    plt.xlabel('Participant Guesses')
+    plt.ylabel('Correct Answer')
+    plt.title(title)
+    plt.show()

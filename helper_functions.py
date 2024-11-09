@@ -1,4 +1,5 @@
 import json
+import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
@@ -179,5 +180,49 @@ def calculate_mcnemar_test(df, image_questions, sound_questions, threshold=3):
 
     return contingency_table, mcnemar_statistic, p_value
 
-
 # Plotting functions
+def plot_survey(df, columns_to_plot, color, output_dir='plots/survey'):
+    '''
+    Create a bar plot for each specified column in the DataFrame `df`, saving the figure
+    in the specified directory.
+
+    Parameters:
+    - df (DataFrame): The DataFrame containing survey data.
+    - columns_to_plot (list): List of column names to plot.
+    - output_dir (str): Directory path to save the plot. Default is 'plots/survey'.
+    - color (str): Color for the bar plots. 
+    '''
+    max_x = 18 
+    
+    # Ensure directory exists
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Set up figure
+    fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(15, 5))
+    axes = axes.flatten()
+    
+    # Plot each column
+    for i, col in enumerate(columns_to_plot):
+        if i >= len(axes):  # Safety check in case there are more columns than subplots
+            break
+        ax = axes[i]
+        value_counts = df[col].value_counts().sort_index()  # Maintain ordinal order
+        value_counts.plot(kind='barh', ax=ax, color=color)
+        
+        ax.set_xlabel('Count', fontsize=12)
+        ax.set_title(f'{col.replace('_', ' ')}', fontsize=14)
+        ax.set_xticks(range(0, max_x + 1, 2))
+        #ax.set_xticks(range(0, int(value_counts.max()) + 1, 2))
+        #ax.set_xlim(0, int(value_counts.max()) + 1)
+        ax.set_xlim(0, max_x+1)  # Set x-axis limit
+        ax.set_ylabel('', fontsize=12)
+        
+    # Remove unused subplots
+    for j in range(i + 1, len(axes)):
+        fig.delaxes(axes[j])
+    
+    # Save and display
+    plt.tight_layout()
+    plt.savefig(f'{output_dir}/survey_results.png', dpi=300, bbox_inches='tight')
+    plt.show()
+

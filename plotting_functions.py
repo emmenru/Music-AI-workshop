@@ -239,7 +239,7 @@ def plot_confusion_matrix(df_guesses, correct_answers_subset, title, output_dir=
     
     # Plot and save
     plt.figure(figsize=(10, 8))
-    sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Reds', xticklabels=labels, yticklabels=labels)
+    sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='BuPu', xticklabels=labels, yticklabels=labels)
     plt.xlabel('Participant Guesses')
     plt.ylabel('Correct Answer')
     plt.title(title)

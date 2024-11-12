@@ -36,48 +36,58 @@ def perform_cochran_q_test(data):
     print('-' * 50)
     return q_statistic
 
-# Chi Square Goodness of Fit test 
-def perform_chi2_test(df, column_name):
+def g_test(df, column_name):
     '''
-    Perform a Chi-Square Goodness of Fit test on a specified column of categorical data.
+    Perform the G-test (Likelihood Ratio Test) for a categorical column in the DataFrame.
 
-    Parameters
-    ----------
-    df : pandas.DataFrame
-    - The DataFrame containing the categorical data.
-        
-    column_name : str
-    - The name of the column to perform the test on.
+    Args:
+    - df (pandas.DataFrame): DataFrame containing the data.
+    - column_name (str): The name of the categorical column to perform the G-test on.
 
-    Returns: 
-    - float: p_value
-    -------
-    None
-        Prints the Chi-square statistic, p-value, and an interpretation of the result.
+    Returns:
+    - g_statistic (float): The G-statistic value.
+    - p_value (float): The p-value indicating the significance of the result.    
     '''
-    # Calculate observed and expected frequencies
-    observed_frequencies = df[column_name].value_counts().values
-    total_observations = len(df)
-    num_categories = len(observed_frequencies)
-    expected_frequency = total_observations / num_categories
-    expected_frequencies = [expected_frequency] * num_categories
+    # Get the observed frequencies for the specified column
+    observed = df[column_name].value_counts().values
+    # Print to verify that all 7 (resp 3) categories are indeed represented (even if 0 counts)
+    # print(df[column_name].value_counts())
 
-    # Perform Chi-square Goodness of Fit test
-    chi2, p_value, dof, _ = chi2_contingency([observed_frequencies, expected_frequencies])
+    # Total number of observations
+    total = np.sum(observed)
+    #print(total)
+    
+    # Compute the expected frequencies assuming equal distribution
+    expected = np.array([total / len(observed)] * len(observed))
+    #print(expected)
 
-    # Print results
-    print(f'Chi-Square Goodness of Fit Test for column: {column_name}')
-    print(f'Chi-square statistic: {chi2:.4f}')
-    print(f'p-value: {p_value:.4f}')
-    print(f'Degrees of freedom: {dof}')
+    # Add a small constant to observed and expected to handle zeros
+    epsilon = 1e-10  # Small constant to prevent division by zero
+    observed = observed + epsilon
+    expected = expected + epsilon
 
+    # Calculate the G-statistic manually using the likelihood ratio formula
+    g_statistic = 2 * np.sum(observed * np.log(observed / expected))
+
+    # Degrees of freedom (number of categories - 1)
+    dof = len(observed) - 1
+
+    # Calculate the p-value using the chi-square distribution
+    p_value = 1 - chi2.cdf(g_statistic, dof)
+
+    # Print results 
+    print(f"Column name: {column_name}")
+    print(f"Observed: {observed}")
+    print(f"Expected: {expected}")
+    print(f"G-statistic: {g_statistic}")
+    print(f"P-value: {p_value}")
+    
     # Interpret significance
     if p_value < 0.05:
-        print(f'****** Significant difference detected for {column_name}. ******')
+        print(f'****** Significant difference ******')
     else:
-        print(f'No significant difference detected for {column_name}.')
+        print(f'No significant difference ')
     print('-' * 50)
-    return(p_value)
 
 # McNemar test 
 def calculate_mcnemar_test(df, image_questions, sound_questions, threshold=3):

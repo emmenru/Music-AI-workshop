@@ -89,6 +89,8 @@ def g_test(df, column_name):
         print(f'No significant difference ')
     print('-' * 50)
 
+    return(p_value)
+    
 # McNemar test 
 def calculate_mcnemar_test(df, image_questions, sound_questions, threshold=3):
     '''

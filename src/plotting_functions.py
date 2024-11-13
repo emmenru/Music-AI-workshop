@@ -2,6 +2,7 @@ import math
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import os
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
@@ -210,40 +211,44 @@ def plot_correct_answers(total_correct_per_question, correct_answers_dict, color
     plt.show()
     plt.close()
 
-def plot_confusion_matrix(df_guesses, correct_answers_subset, title, output_dir='output/plots/quiz'):
+def plot_confusion_matrix(df_guesses, correct_answers_subset, title, output_dir='output/plots/quiz', cmap='BuPu'):
     '''
-    Generate and plot a confusion matrix for the guesses made by participants 
+    Generate and plot a confusion matrix for the guesses made by participants
     for the selected questions, comparing their answers with the correct answers.
-    
+
     Parameters:
     - df_guesses (DataFrame): DataFrame containing participants' guesses for each question (columns represent questions).
     - correct_answers_subset (dict): Dictionary with the correct answers for the selected questions (e.g., {'Q1': 'Answer1', 'Q2': 'Answer2'}).
     - title (str): Title for the confusion matrix plot.
     - output_dir (str): Directory to save the confusion matrix plot. Default is 'output/plots/quiz'.
+    - cmap (str): Colormap for the heatmap.
     '''
-    
+
     # Ensure the output directory exists
     os.makedirs(output_dir, exist_ok=True)
-    
+
     # Flatten the correct answers and guesses for the selected questions
     y_true = []
     y_pred = []
-    
+
     for question, correct_answer in correct_answers_subset.items():
-        # Add "image" or "sound" suffix based on question number
         suffix = " image" if int(question[1:]) <= 6 else " sound"
-        y_true.extend([correct_answer] * len(df_guesses))  # Repeat correct answer for each participant
-        y_pred.extend([guess + suffix for guess in df_guesses[question].tolist()])  # Add suffix to guesses
-    
+        y_true.extend([correct_answer] * len(df_guesses))
+        y_pred.extend([guess + suffix for guess in df_guesses[question].tolist()])
+
     # Get the unique labels from correct answers
     labels = sorted(list(set(correct_answers_subset.values())))
-    
+
     # Generate the confusion matrix
     conf_matrix = confusion_matrix(y_true, y_pred, labels=labels)
-    
-    # Plot and save
+
+    # Normalize the confusion matrix to a common range (0 to 1)
+    max_value = np.max(conf_matrix)
+    conf_matrix_normalized = conf_matrix / max_value
+
+    # Plot the normalized confusion matrix
     plt.figure(figsize=(10, 8))
-    sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='BuPu', xticklabels=labels, yticklabels=labels)
+    sns.heatmap(conf_matrix_normalized, annot=True, fmt='.2f', cmap=cmap, xticklabels=labels, yticklabels=labels)
     plt.xlabel('Participant Guesses')
     plt.ylabel('Correct Answer')
     plt.title(title)

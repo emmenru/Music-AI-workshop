@@ -232,7 +232,7 @@ def plot_confusion_matrix(df_guesses, correct_answers_subset, title, output_dir=
     y_pred = []
 
     for question, correct_answer in correct_answers_subset.items():
-        suffix = " image" if int(question[1:]) <= 6 else " sound"
+        suffix = ' image' if int(question[1:]) <= 6 else ' sound'
         y_true.extend([correct_answer] * len(df_guesses))
         y_pred.extend([guess + suffix for guess in df_guesses[question].tolist()])
 

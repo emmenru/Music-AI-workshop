@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix
 
 # Plotting functions
 # Survey
-def plot_survey(df, columns_to_plot, color, expected, max_x=18, output_dir='plots/survey', file_name=''):
+def plot_survey(df, columns_to_plot, color, expected, max_x=18, output_dir='output/plots/survey', file_name=''):
     """
     Create bar plots for specified columns in the DataFrame `df`, saving the figure
     in the specified directory.
@@ -17,7 +17,7 @@ def plot_survey(df, columns_to_plot, color, expected, max_x=18, output_dir='plot
       - df (DataFrame): The DataFrame containing survey data.
       - columns_to_plot (list): List of column names to plot.
       - max_x (int): Max value for x-axis. Default is 18.
-      - output_dir (str): Directory path to save the plot. Default is 'plots/survey'.
+      - output_dir (str): Directory path to save the plot. Default is 'output/plots/survey'.
       - color (str): Color for the bar plots.
       - expected (int): Expected value to be displayed as a vertical line.
       - file_name (str, optional): Filename for the plot. Default is ''.
@@ -56,7 +56,7 @@ def plot_survey(df, columns_to_plot, color, expected, max_x=18, output_dir='plot
     plt.show()
 
 # Quiz
-def plot_and_save_questions(df, title, color_map, unique_categories, correct_answers_dict, output_dir='plots/quiz', max_x=13):
+def plot_and_save_questions(df, title, color_map, unique_categories, correct_answers_dict, output_dir='output/plots/quiz', max_x=13):
     '''
     Create a set of bar plots for each column in the DataFrame `df`, saving individual plots and a combined figure.
 
@@ -65,7 +65,7 @@ def plot_and_save_questions(df, title, color_map, unique_categories, correct_ans
     - title (str): Title for the main plot figure.
     - color_map (dict): Mapping of categories to colors.
     - unique_categories (array): List of unique categories in the responses.
-    - output_dir (str): Directory to save the plots. Default is 'plots/quiz'.
+    - output_dir (str): Directory to save the plots. Default is 'output/plots/quiz'.
     - max_x (int): Maximum x-axis value for the plots. Default is 13.
     '''
     os.makedirs(output_dir, exist_ok=True)  # Ensure output directory exists
@@ -114,7 +114,7 @@ def plot_and_save_questions(df, title, color_map, unique_categories, correct_ans
     plt.savefig(main_filename, dpi=300, bbox_inches='tight')
     plt.show()
 
-def plot_stacked_bar(df_subset, title, color_map, unique_categories, label_dict, output_dir='plots/quiz'):
+def plot_stacked_bar(df_subset, title, color_map, unique_categories, label_dict, output_dir='output/plots/quiz'):
     '''
     Create a stacked bar plot for survey questions, saving the figure in the specified directory.
 
@@ -124,7 +124,7 @@ def plot_stacked_bar(df_subset, title, color_map, unique_categories, label_dict,
     - color_map (dict): Mapping of categories to colors.
     - unique_categories (array): List of unique categories in the responses.
     - label_dict (dict): Dictionary mapping column names to their labels.
-    - output_dir (str): Directory to save the plot. Default is 'plots/quiz'.
+    - output_dir (str): Directory to save the plot. Default is 'output/plots/quiz'.
     '''
     os.makedirs(output_dir, exist_ok=True)
     
@@ -150,7 +150,7 @@ def plot_stacked_bar(df_subset, title, color_map, unique_categories, label_dict,
     plt.show()
     plt.close()
 
-def plot_correct_answers(total_correct_per_question, correct_answers_dict, colorblind_palette, IMAGE_LIST, SOUND_LIST, output_dir='plots/quiz'):
+def plot_correct_answers(total_correct_per_question, correct_answers_dict, colorblind_palette, IMAGE_LIST, SOUND_LIST, output_dir='data/plots/quiz'):
     '''
     Plot a horizontal bar chart showing the number of correct answers per question,
     with distinct colors for image and sound-related questions, and save the figure.
@@ -161,7 +161,7 @@ def plot_correct_answers(total_correct_per_question, correct_answers_dict, color
     - colorblind_palette (list): List of colors for visual distinction (e.g., for images and sounds).
     - IMAGE_LIST (list): List of image-related question identifiers (e.g., Q1-Q6).
     - SOUND_LIST (list): List of sound-related question identifiers (e.g., Q7-Q12).
-    - output_dir (str): Directory to save the plot. Default is 'plots/quiz'.
+    - output_dir (str): Directory to save the plot. Default is 'output/plots/quiz'.
     '''
     # Ensure directory exists
     os.makedirs(output_dir, exist_ok=True)
@@ -210,7 +210,7 @@ def plot_correct_answers(total_correct_per_question, correct_answers_dict, color
     plt.show()
     plt.close()
 
-def plot_confusion_matrix(df_guesses, correct_answers_subset, title, output_dir='plots/quiz'):
+def plot_confusion_matrix(df_guesses, correct_answers_subset, title, output_dir='output/plots/quiz'):
     '''
     Generate and plot a confusion matrix for the guesses made by participants 
     for the selected questions, comparing their answers with the correct answers.
@@ -219,7 +219,7 @@ def plot_confusion_matrix(df_guesses, correct_answers_subset, title, output_dir=
     - df_guesses (DataFrame): DataFrame containing participants' guesses for each question (columns represent questions).
     - correct_answers_subset (dict): Dictionary with the correct answers for the selected questions (e.g., {'Q1': 'Answer1', 'Q2': 'Answer2'}).
     - title (str): Title for the confusion matrix plot.
-    - output_dir (str): Directory to save the confusion matrix plot. Default is 'plots/quiz'.
+    - output_dir (str): Directory to save the confusion matrix plot. Default is 'output/plots/quiz'.
     '''
     
     # Ensure the output directory exists

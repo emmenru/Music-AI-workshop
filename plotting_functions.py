@@ -8,48 +8,51 @@ from sklearn.metrics import confusion_matrix
 
 # Plotting functions
 # Survey
-def plot_survey(df, columns_to_plot, color, expected, max_x = 18, output_dir='plots/survey'):
-    '''
-    Create a bar plot for each specified column in the DataFrame `df`, saving the figure
+def plot_survey(df, columns_to_plot, color, expected, max_x=18, output_dir='plots/survey', file_name=''):
+    """
+    Create bar plots for specified columns in the DataFrame `df`, saving the figure
     in the specified directory.
 
     Parameters:
-    - df (DataFrame): The DataFrame containing survey data.
-    - columns_to_plot (list): List of column names to plot.
-    - max_x (int) : max value for x axis. Default is 18. 
-    - output_dir (str): Directory path to save the plot. Default is 'plots/survey'.
-    - color (str): Color for the bar plots. 
-    '''
-    
-    # Ensure directory exists
+      - df (DataFrame): The DataFrame containing survey data.
+      - columns_to_plot (list): List of column names to plot.
+      - max_x (int): Max value for x-axis. Default is 18.
+      - output_dir (str): Directory path to save the plot. Default is 'plots/survey'.
+      - color (str): Color for the bar plots.
+      - expected (int): Expected value to be displayed as a vertical line.
+      - file_name (str, optional): Filename for the plot. Default is ''.
+    """
+
     os.makedirs(output_dir, exist_ok=True)
-    
-    # Set up figure
-    fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(15, 5))
+    output_path = f'{output_dir}/{file_name}.png'
+
+    # Ensure 6 subplots, even if fewer columns are provided
+    num_plots = len(columns_to_plot)
+    num_subplots = 6
+    num_rows = 2
+    num_cols = 3
+
+    fig, axes = plt.subplots(nrows=num_rows, ncols=num_cols, figsize=(15, 5))
     axes = axes.flatten()
-    
-    # Plot each column
+
     for i, col in enumerate(columns_to_plot):
-        if i >= len(axes):  # Safety check in case there are more columns than subplots
-            break
         ax = axes[i]
-        value_counts = df[col].value_counts().sort_index()  # Maintain ordinal order
+        value_counts = df[col].value_counts().sort_index()
         value_counts.plot(kind='barh', ax=ax, color=color)
-        
+
         ax.set_xlabel('Count', fontsize=12)
-        ax.set_title(f'{col.replace('_', ' ')}', fontsize=14)
+        ax.set_title(f'{col.replace("_", " ")}', fontsize=14)
         ax.set_xticks(range(0, max_x + 1, 2))
-        ax.set_xlim(0, max_x+1)  # Set x-axis limit
+        ax.set_xlim(0, max_x + 1)
         ax.set_ylabel('', fontsize=12)
         ax.axvline(x=expected, color='grey', linestyle='--', label='Expected value')
-        
-    # Remove unused subplots
-    for j in range(i + 1, len(axes)):
-        fig.delaxes(axes[j])
-    
-    # Save and display
+
+    # Hide the last subplot if there are fewer than 6 columns
+    if num_plots < num_subplots:
+        axes[-1].axis('off')
+
     plt.tight_layout()
-    plt.savefig(f'{output_dir}/survey_results.png', dpi=300, bbox_inches='tight')
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.show()
 
 # Quiz

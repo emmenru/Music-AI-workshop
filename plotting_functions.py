@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix
 
 # Plotting functions
 # Survey
-def plot_survey(df, columns_to_plot, color, output_dir='plots/survey'):
+def plot_survey(df, columns_to_plot, color, expected, max_x = 18, output_dir='plots/survey'):
     '''
     Create a bar plot for each specified column in the DataFrame `df`, saving the figure
     in the specified directory.
@@ -16,10 +16,10 @@ def plot_survey(df, columns_to_plot, color, output_dir='plots/survey'):
     Parameters:
     - df (DataFrame): The DataFrame containing survey data.
     - columns_to_plot (list): List of column names to plot.
+    - max_x (int) : max value for x axis. Default is 18. 
     - output_dir (str): Directory path to save the plot. Default is 'plots/survey'.
     - color (str): Color for the bar plots. 
     '''
-    max_x = 18 
     
     # Ensure directory exists
     os.makedirs(output_dir, exist_ok=True)
@@ -41,6 +41,7 @@ def plot_survey(df, columns_to_plot, color, output_dir='plots/survey'):
         ax.set_xticks(range(0, max_x + 1, 2))
         ax.set_xlim(0, max_x+1)  # Set x-axis limit
         ax.set_ylabel('', fontsize=12)
+        ax.axvline(x=expected, color='grey', linestyle='--', label='Expected value')
         
     # Remove unused subplots
     for j in range(i + 1, len(axes)):
@@ -111,7 +112,7 @@ def plot_and_save_questions(df, title, color_map, unique_categories, correct_ans
     plt.show()
 
 def plot_stacked_bar(df_subset, title, color_map, unique_categories, label_dict, output_dir='plots/quiz'):
-    """
+    '''
     Create a stacked bar plot for survey questions, saving the figure in the specified directory.
 
     Parameters:
@@ -121,7 +122,7 @@ def plot_stacked_bar(df_subset, title, color_map, unique_categories, label_dict,
     - unique_categories (array): List of unique categories in the responses.
     - label_dict (dict): Dictionary mapping column names to their labels.
     - output_dir (str): Directory to save the plot. Default is 'plots/quiz'.
-    """
+    '''
     os.makedirs(output_dir, exist_ok=True)
     
     # Create figure and calculate response counts
@@ -134,12 +135,12 @@ def plot_stacked_bar(df_subset, title, color_map, unique_categories, label_dict,
     ax.set_ylabel("Count", fontsize=14)
     ax.set_xticklabels([f"{col}: {label_dict[col]}" for col in df_subset.columns], rotation=45, ha='right', fontsize=12)
     ax.tick_params(axis='y', labelsize=12)
-    
+
     # Y-axis and legend settings
     ax.set_ylim(0, ax.get_ylim()[1] + 1)
     ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
     ax.legend(title="Response", loc='upper left', fontsize=12, title_fontsize=14, bbox_to_anchor=(1, 1))
-    
+
     # Save and display 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/stacked_{title.lower().replace(' ', '_').replace(':', '')}.png", dpi=300, bbox_inches='tight')

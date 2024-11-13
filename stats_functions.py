@@ -4,6 +4,12 @@ import pandas as pd
 from scipy.stats import chi2_contingency, chi2
 from statsmodels.stats.contingency_tables import cochrans_q
 
+def interpret_significance(p_value): 
+    if p_value < 0.05:
+        print(f'****** Significant difference ******')
+    else:
+        print(f'No significant difference ')
+    print('-' * 50)
 
 # Cochran's Q test 
 def perform_cochran_q_test(data):
@@ -29,13 +35,10 @@ def perform_cochran_q_test(data):
     print(f'Cochran\'s Q Statistic: {q_statistic}')
     print(f'P-value: {p_value}')
     
-    if p_value < 0.05:
-        print('Significant differences among the questions.')
-    else:
-        print('No significant differences among the questions.')
-    print('-' * 50)
+    interpret_significance(p_value)
     return q_statistic
 
+# G test that works column-wise, comparing different categories 
 def g_test(df, column_name):
     '''
     Perform the G-test (Likelihood Ratio Test) for a categorical column in the DataFrame.
@@ -76,21 +79,70 @@ def g_test(df, column_name):
     p_value = 1 - chi2.cdf(g_statistic, dof)
 
     # Print results 
-    print(f"Column name: {column_name}")
-    print(f"Observed: {observed}")
-    print(f"Expected: {expected}")
-    print(f"G-statistic: {g_statistic}")
-    print(f"P-value: {p_value}")
+    print(f'Column name: {column_name}\n'
+      f'Observed: {observed}\n'
+      f'Expected: {expected}\n'
+      f'G-statistic: {g_statistic}\n'
+      f'P-value: {p_value}')
     
     # Interpret significance
-    if p_value < 0.05:
-        print(f'****** Significant difference ******')
-    else:
-        print(f'No significant difference ')
-    print('-' * 50)
+    interpret_significance(p_value)
 
     return(p_value)
+
+# G test used for pairwise post hoc tests 
+def g_test_pairwise(df, column_name, category1, category2):
+    '''
+    Perform the G-test (Likelihood Ratio Test) for a specific pair of categories in a categorical column.
+
+    Args:
+    - df (pandas.DataFrame): DataFrame containing the data.
+    - column_name (str): The name of the categorical column to perform the G-test on.
+    - category1 (str): The first category to compare.
+    - category2 (str): The second category to compare.
+
+    Returns:
+    - g_statistic (float): The G-statistic value.
+    - p_value (float): The p-value indicating the significance of the result.    
+    '''
+    # Get the observed frequencies for the specified column for the two categories
+    observed = df[column_name].value_counts().loc[[category1, category2]].values
+    # If categories do not exist in the column, set their count to 0
+    if len(observed) < 2:  # If one of the categories has no data
+        observed = np.append(observed, [0]*(2 - len(observed)))
+
+    # Total number of observations in the entire dataset
+    total = len(df)  # Total observations in the full dataset
     
+    # Compute the expected frequencies assuming equal distribution across 3 categories
+    expected = np.array([total / 3] * 2)  # For the two categories being compared, divide by 3
+
+    # Add a small constant to observed and expected to handle zeros
+    epsilon = 1e-10  # Small constant to prevent division by zero
+    observed = observed + epsilon
+    expected = expected + epsilon
+
+    # Calculate the G-statistic manually using the likelihood ratio formula
+    g_statistic = 2 * np.sum(observed * np.log(observed / expected))
+
+    # Degrees of freedom (2 categories - 1)
+    dof = 1  # df for 2 categories is always 1
+
+    # Calculate the p-value using the chi-square distribution
+    p_value = 1 - chi2.cdf(g_statistic, dof)
+
+    # Print results
+    print(f'Comparing categories: {category1} vs. {category2}\n'
+      f'Observed counts: {observed}\n'
+      f'Expected counts: {expected}\n'
+      f'G-statistic: {g_statistic}\n'
+      f'P-value: {p_value}')
+
+    # Interpret significance
+    interpret_significance(p_value)
+
+    return p_value
+
 # McNemar test 
 def calculate_mcnemar_test(df, image_questions, sound_questions, threshold=3):
     '''
@@ -138,10 +190,10 @@ def calculate_mcnemar_test(df, image_questions, sound_questions, threshold=3):
     # Calculate the p-value using chi-square distribution with 1 degree of freedom
     p_value = chi2.sf(mcnemar_statistic, df=1)
 
-    # Print the contingency table, test statistic, and p-value (optional for debugging)
-    print("McNemar's 2x2 Contingency Table:")
-    print(contingency_table)
-    print("\nMcNemar test statistic (without continuity correction):", mcnemar_statistic)
-    print("p-value:", p_value)
-
+    # Print the contingency table, test statistic, and p-value 
+    print(f'McNemars 2x2 Contingency Table:\n'
+      f'Table: {contingency_table}\n'
+      f'McNemar test statistic (without continuity correction): {mcnemar_statistic}\n'
+      f'P-value: {p_value}')
+    
     return contingency_table, mcnemar_statistic, p_value

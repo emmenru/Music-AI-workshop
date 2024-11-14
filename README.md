@@ -32,11 +32,11 @@ The workshop aimed to explore the impact of sound environments on retail custome
 
 ## File Descriptions
 
-- **AI-music-workshop.ipynb**: Main Jupyter notebook for running all project analyses and generating outputs.
-- **config/**: Stores JSON configuration files for handling categorical and ordinal data processing.
-- **data/**: Contains original data files (excluded from the repository until the scientific paper is published).
+- **AI-music-workshop.ipynb**: Main Jupyter notebook for running analyses and generating outputs.
+- **config/**: JSON configuration files for handling categorical and ordinal data processing.
+- **data/**: Contains original data files (excluded from the repository until scientific paper is published).
 - **output/**: Stores generated outputs such as figures and data exports (some contents excluded pre-publication).
-  - **data/**: Folder for data exports (excluded from repository pre-publication).
+  - **data/**: Folder for csv exports (excluded from repository pre-publication).
   - **plots/**: Folder for generated plots, with subdirectories for `quiz` and `survey` plots.
 - **src/**: Python scripts with helper functions for configuration loading, data processing, plotting, and statistical analysis.
  
@@ -44,7 +44,7 @@ The workshop aimed to explore the impact of sound environments on retail custome
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/yourusername/AI-music-workshop.git
+    git clone https://github.com/emmenru/AI-music-workshop.git
     cd AI-music-workshop
     ```
 

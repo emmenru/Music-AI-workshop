@@ -2,5 +2,4 @@
 *.csv
 *.ipynb_checkpoints/
 __pycache__/
-plots/
 .DS_Store

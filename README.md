@@ -34,18 +34,12 @@ The workshop aimed to explore the impact of sound environments on retail custome
 
 - **AI-music-workshop.ipynb**: Main Jupyter notebook for running all project analyses and generating outputs.
 - **config/**: Stores JSON configuration files for handling categorical and ordinal data processing.
-  - **ordinal_cols-3-step.json**: JSON file for ordinal column configurations (3-step scale).
-  - **ordinal_cols.json**: JSON file for full ordinal column configuration.
-  - **recode_mappings.json**: JSON file with mappings for response recoding.
 - **data/**: Contains original data files (excluded from the repository until the scientific paper is published).
 - **output/**: Stores generated outputs such as figures and data exports (some contents excluded pre-publication).
   - **data/**: Folder for data exports (excluded from repository pre-publication).
   - **plots/**: Folder for generated plots, with subdirectories for `quiz` and `survey` plots.
 - **src/**: Python scripts with helper functions for configuration loading, data processing, plotting, and statistical analysis.
-  - **helper_functions.py**: Script for loading configs and recoding data.
-  - **plotting_functions.py**: Plotting utilities for survey and quiz data visualizations.
-  - **stats_functions.py**: Statistical analysis utilities.
-
+ 
 ## Setup and Installation
 
 1. **Clone the repository**:
@@ -61,15 +55,3 @@ The workshop aimed to explore the impact of sound environments on retail custome
 
 3. **Run the Notebook**:
    Open `AI-music-workshop.ipynb` in Jupyter Notebook. All configurations, including ordinal columns and recode mappings, will load automatically. 
-
-## Dependencies
-
-The project requires the following Python libraries, which can be installed via the `requirements.txt` file:
-
-- pandas
-- numpy
-- scipy
-- matplotlib
-- seaborn
-- statsmodels
-- jupyter

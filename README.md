@@ -52,6 +52,7 @@ The workshop aimed to explore the impact of sound environments on retail custome
     ```python
     pip install -r requirements.txt
     ```
+I use a virtual environment to isolate project dependencies, launched in Jupyter Notebook using ipykernel (see e.g. https://janakiev.com/blog/jupyter-virtual-envs/). 
 
 3. **Run the Notebook**:
-   Open `AI-music-workshop.ipynb` in Jupyter Notebook. All configurations, including ordinal columns and recode mappings, will load automatically. 
+   Open `AI-music-workshop.ipynb` in Jupyter Notebook. All configurations will load automatically. 

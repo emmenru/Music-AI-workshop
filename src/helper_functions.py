@@ -23,7 +23,6 @@ def load_recode_mappings(json_file: str) -> dict:
     except FileNotFoundError:
         raise FileNotFoundError(f'{json_file} does not exist. Please check the file path.')
 
-
 def convert_to_categorical(col, ordinal_columns):
     '''
     Converts a column to ordered categorical type if in the ordinal_columns dictionary.
@@ -38,3 +37,28 @@ def convert_to_categorical(col, ordinal_columns):
     if col.name in ordinal_columns:
         return pd.Categorical(col, categories=ordinal_columns[col.name], ordered=True)
     return col
+
+def create_answer_matrix(df, correct_answers):
+    '''
+    Create a matrix of 1s and 0s representing correct and incorrect answers.
+    
+    Parameters:
+    df (pandas.DataFrame): The DataFrame containing the quiz data.
+    correct_answers (list): A list of the correct answers, in the order of the quiz questions.
+    
+    Returns:
+    pandas.DataFrame: A DataFrame containing the answer matrix.
+    '''
+    correct_answers_dict = {}
+    for i, answer in enumerate(correct_answers):
+        if i < 6:
+            correct_answers_dict[f"Q{i+1}"] = answer + ' image'
+        else:
+            correct_answers_dict[f"Q{i+1}"] = answer + ' sound'
+    
+    df_correct = df.copy()
+    
+    for i in range(12):
+        df_correct[f'Q{i+1}'] = df_correct[f'Q{i+1}'].apply(lambda x: 1 if x == correct_answers[i] else 0)
+    
+    return df_correct.iloc[:, 3:]

@@ -48,9 +48,9 @@ The workshop aimed to explore the impact of sound environments on retail custome
     cd AI-music-workshop
     ```
 
-2. **Install required packages**: To run the Jupyter Notebook, first install dependencies directly within a notebook cell:
+2. **Install required packages**: This project requires specific Python packages to function properly. You can install them using a package manager like `pip`:
     ```python
-    !pip install -r requirements.txt
+    pip install -r requirements.txt
     ```
 
 3. **Run the Notebook**:

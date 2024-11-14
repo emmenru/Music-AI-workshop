@@ -1,8 +1,6 @@
-
-.DS_Store
-data/nrwc2024-survey_V3.csv
-data/NRWC-quiz_V2.xlsx
-.ipynb_checkpoints/
-__pycache__/
-plots/.DS_Store
+*.xlsx
 *.csv
+*.ipynb_checkpoints/
+__pycache__/
+plots/
+.DS_Store

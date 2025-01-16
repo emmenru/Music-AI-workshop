@@ -151,7 +151,7 @@ def plot_stacked_bar(df_subset, title, color_map, unique_categories, label_dict,
     plt.show()
     plt.close()
 
-def plot_correct_answers(total_correct_per_question, correct_answers_dict, colorblind_palette, IMAGE_LIST, SOUND_LIST, output_dir='data/plots/quiz'):
+def plot_correct_answers(total_correct_per_question, correct_answers_dict, colorblind_palette, IMAGE_LIST, SOUND_LIST, output_dir='output/plots/quiz'):
     '''
     Plot a horizontal bar chart showing the number of correct answers per question,
     with distinct colors for image and sound-related questions, and save the figure.
